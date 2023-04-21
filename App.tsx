@@ -1,6 +1,20 @@
 import React from 'react';
-import Login from './app/components/screens/Login';
 
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import AuthNavigator from './app/navigation/AuthNavigator';
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'white',
+    primary: 'tomato',
+  },
+};
 export default function App() {
-  return <Login />;
+  return (
+    <NavigationContainer theme={theme}>
+      <AuthNavigator />
+    </NavigationContainer>
+  );
 }
