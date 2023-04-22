@@ -25,10 +25,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    height: 100,
-    width: 100,
+    height: 200,
+    width: 200,
     marginBottom: 20,
-    marginTop: height * 0.1,
+    marginTop: 30,
     alignSelf: 'center',
   },
   input: {
