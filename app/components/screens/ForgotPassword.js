@@ -13,7 +13,6 @@ import {
 import CustomFormik from '../CustomFormik';
 import {forgotPassword} from '../../utils/auth';
 import AppNotification from '../AppNotification';
-
 const initialValues = {
   email: '',
 };

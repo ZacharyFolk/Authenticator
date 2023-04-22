@@ -12,7 +12,7 @@ const AppNotification = ({type, text}) => {
     }).start();
   }, []);
 
-  let backgroundColor = type === 'error' ? '#f8d7da' : '#d4edda'; // rgba(255, 0, 0, 0.5)
+  let backgroundColor = type === 'error' ? '#f8d7da' : '#d4edda';
   return (
     <Animated.View style={[styles.container, {height, backgroundColor}]}>
       <Text style={styles.text}>{text}</Text>
