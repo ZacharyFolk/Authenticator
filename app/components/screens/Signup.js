@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import * as Yup from 'yup';
 import FormContainer from '../FormContainer';
 import AppInput from '../AppInput';
@@ -39,6 +39,10 @@ const Signup = () => {
       return updateNotification(setMessage, res.error);
     }
     formikActions.resetForm();
+
+    navigation.dispatch(
+      StackActions.replace('Verification', {profile: res.user}), // user object from API
+    );
     console.log(res);
   };
 

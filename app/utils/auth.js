@@ -38,3 +38,14 @@ export const forgotPassword = async email => {
     return catchError(error);
   }
 };
+
+export const verifyEmail = async (otp, userId) => {
+  try {
+    console.log('From verifyEmail', otp, userId);
+    const {data} = await client.post('/user/verify-email', {otp, userId});
+    console.log('data', data);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
