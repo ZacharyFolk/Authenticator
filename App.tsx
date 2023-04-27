@@ -2,7 +2,7 @@ import React from 'react';
 
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './app/navigation/AuthNavigator';
-
+import {UserProvider} from './app/context/UserContext';
 const theme = {
   ...DefaultTheme,
   colors: {
@@ -13,8 +13,10 @@ const theme = {
 };
 export default function App() {
   return (
-    <NavigationContainer theme={theme}>
-      <AuthNavigator />
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer theme={theme}>
+        <AuthNavigator />
+      </NavigationContainer>
+    </UserProvider>
   );
 }

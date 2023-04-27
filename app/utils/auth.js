@@ -8,9 +8,14 @@ const catchError = error => {
 };
 export const signup = async values => {
   try {
-    const {data} = await client.post('/user/create', {
-      ...values,
-    });
+    const {data} = await Promise.race([
+      client.post('/user/create', {
+        ...values,
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timed out')), 5000),
+      ), // 5000ms timeout
+    ]);
     return data;
   } catch (error) {
     return catchError(error);
@@ -19,9 +24,14 @@ export const signup = async values => {
 
 export const signin = async values => {
   try {
-    const {data} = await client.post('/user/signin', {
-      ...values,
-    });
+    const {data} = await Promise.race([
+      client.post('/user/signin', {
+        ...values,
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timed out')), 5000),
+      ), // 5000ms timeout
+    ]);
     return data;
   } catch (error) {
     return catchError(error);

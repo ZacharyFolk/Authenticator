@@ -8,11 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {StackActions} from '@react-navigation/native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {verifyEmail} from '../../utils/auth';
+import AppNotification from '../AppNotification';
+import {updateNotification} from '../../utils/helper';
+import {UserContext} from '../../context/UserContext';
 const inputs = Array(4).fill('');
 let newInputIndex = 0;
 
@@ -23,9 +26,10 @@ const isObjValid = obj => {
 const Verification = ({route, navigation}) => {
   // profile comes from handleSignup
   const {profile} = route.params;
-
+  const [message, setMessage] = useState({type: '', text: ''});
   console.log('route', route);
   console.log('profile', profile);
+  const {user, setUser} = useContext(UserContext);
 
   const inputRef = useRef();
   const [OTP, setOTP] = useState({0: '', 1: '', 2: '', 3: ''});
@@ -58,42 +62,48 @@ const Verification = ({route, navigation}) => {
 
       const res = await verifyEmail(val, profile.id);
       if (!res.success) {
-        return console.log(res.error);
+        return updateNotification(setMessage, res.error);
       }
-      navigation.dispatch(
-        StackActions.replace('Home', {profile: res.user}), // user object from API
-      );
+      const updatedProfile = {...profile, verified: true};
+      setUser(updatedProfile);
+
+      navigation.dispatch(StackActions.replace('Home'));
     }
   };
   useEffect(() => {
     inputRef.current.focus();
   }, [nextInputIndex]);
   return (
-    <KeyboardAvoidingView style={styles.container}>
-      <Text style={styles.heading}>
-        Please verify your account. A PIN has been sent to your email.
-      </Text>
-      <View style={styles.otpContainer}>
-        {inputs.map((inp, index) => {
-          return (
-            <View style={styles.inputContainer} key={index.toString()}>
-              <TextInput
-                value={OTP[index]}
-                onChangeText={text => handleChangeText(text, index)}
-                placeholder="0"
-                keyboardType="numeric"
-                maxLength={1}
-                style={styles.input}
-                ref={nextInputIndex === index ? inputRef : null}
-              />
-            </View>
-          );
-        })}
-      </View>
-      <TouchableOpacity onPress={submitOTP} style={styles.submitIcon}>
-        <Icon name="checkmark-outline" color="#fff" size={24} />
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+    <>
+      {message.text ? (
+        <AppNotification type={message.type} text={message.text} />
+      ) : null}
+      <KeyboardAvoidingView style={styles.container}>
+        <Text style={styles.heading}>
+          Please verify your account. A PIN has been sent to your email.
+        </Text>
+        <View style={styles.otpContainer}>
+          {inputs.map((inp, index) => {
+            return (
+              <View style={styles.inputContainer} key={index.toString()}>
+                <TextInput
+                  value={OTP[index]}
+                  onChangeText={text => handleChangeText(text, index)}
+                  placeholder="0"
+                  keyboardType="numeric"
+                  maxLength={1}
+                  style={styles.input}
+                  ref={nextInputIndex === index ? inputRef : null}
+                />
+              </View>
+            );
+          })}
+        </View>
+        <TouchableOpacity onPress={submitOTP} style={styles.submitIcon}>
+          <Icon name="checkmark-outline" color="#fff" size={24} />
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </>
   );
 };
 
