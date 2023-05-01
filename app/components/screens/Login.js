@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 import * as Yup from 'yup';
 import FormContainer from '../FormContainer';
 import AppInput from '../AppInput';
@@ -13,7 +14,8 @@ import {
 import CustomFormik from '../CustomFormik';
 import {signin} from '../../utils/auth';
 import AppNotification from '../AppNotification';
-
+import {UserContext} from '../../context/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const initialValues = {
   email: '',
   password: '',
@@ -30,6 +32,7 @@ const validationSchema = Yup.object({}).shape({
 const Login = () => {
   const navigation = useNavigation();
   const [message, setMessage] = useState({type: '', text: ''});
+  const {user, setUser} = useContext(UserContext);
 
   const handleLogin = async (values, formikActions) => {
     const res = await signin(values);
@@ -38,7 +41,19 @@ const Login = () => {
       return updateNotification(setMessage, res.error);
     }
     formikActions.resetForm();
-    console.log(res);
+
+    const {token, ...userWithoutToken} = res.user; // remove token from user object
+    setUser(userWithoutToken); // set user object in context
+
+    // store user in async storage (TODO : :replace with token)
+    try {
+      await AsyncStorage.setItem('authToken', token);
+    } catch (error) {
+      console.log('Error saving token to AsyncStorage:', error);
+    }
+    console.log(res.user);
+
+    navigation.dispatch(StackActions.replace('Home'));
   };
 
   return (

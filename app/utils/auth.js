@@ -59,3 +59,26 @@ export const verifyEmail = async (otp, userId) => {
     return catchError(error);
   }
 };
+
+export const validateAuthToken = async token => {
+  try {
+    console.log('doing stuff', token);
+    const response = await fetch(
+      'http://10.0.2.2:8000/api/user/validate-auth',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log('Raw response:', response); // Add this line to log the raw response
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error validating auth token:', error);
+    return {success: false, error: 'Error validating auth token'};
+  }
+};
