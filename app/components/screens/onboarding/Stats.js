@@ -5,6 +5,7 @@ const StatsScreen = ({navigation}) => {
   const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
+
   const handleSubmit = () => {
     // Save age to the context or local state
     // navigation.navigate('Height');

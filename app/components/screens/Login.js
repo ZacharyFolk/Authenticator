@@ -35,25 +35,28 @@ const Login = () => {
   const {user, setUser} = useContext(UserContext);
 
   const handleLogin = async (values, formikActions) => {
-    const res = await signin(values);
-    formikActions.setSubmitting(false);
-    if (!res.success) {
-      return updateNotification(setMessage, res.error);
-    }
-    formikActions.resetForm();
-
-    const {token, ...userWithoutToken} = res.user; // remove token from user object
-    setUser(userWithoutToken); // set user object in context
-
-    // store user in async storage (TODO : :replace with token)
     try {
-      await AsyncStorage.setItem('authToken', token);
+      const res = await signin(values);
+      formikActions.setSubmitting(false);
+      if (!res.success) {
+        return updateNotification(setMessage, res.error);
+      }
+
+      formikActions.resetForm();
+
+      // const {token, ...userWithoutToken} = res.user; // remove token from user object
+      // setUser(userWithoutToken); // set user object in context
+
+      console.log('what is response?', res);
+      console.log(res.user);
+      console.log(res.tokens);
+      await AsyncStorage.setItem('authToken', res.tokens.accessToken);
+      await AsyncStorage.setItem('refreshToken', res.tokens.refreshToken);
     } catch (error) {
       console.log('Error saving token to AsyncStorage:', error);
     }
-    console.log(res.user);
 
-    navigation.dispatch(StackActions.replace('Home'));
+    //  navigation.dispatch(StackActions.replace('Home'));
   };
 
   return (

@@ -67,7 +67,7 @@ const Verification = ({route, navigation}) => {
       const updatedProfile = {...profile, verified: true};
       setUser(updatedProfile);
 
-      navigation.dispatch(StackActions.replace('Home'));
+      navigation.dispatch(StackActions.replace('Login'));
     }
   };
   useEffect(() => {
